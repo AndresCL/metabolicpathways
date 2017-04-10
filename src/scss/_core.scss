@@ -1,0 +1,95 @@
+body {
+    background-color: darken($background, 5%);
+    -webkit-font-smoothing: antialiased;
+}
+
+.btn,
+.btn-large{
+    background-color: $blue-light;
+}
+
+.btn:hover, 
+.btn-large:hover, 
+.btn:focus, 
+.btn-large:focus, 
+.btn-floating:focus {
+    background-color: $blue-light2;
+}
+
+button, 
+html, 
+input, 
+md-bottom-sheet .md-subheader, 
+select, 
+textarea {
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+nav {
+    background-color: $background;
+    font-size: .8em;
+    font-weight: 700;
+    height: 52px;
+    z-index: 99;
+
+    a {
+        color: $grey;
+    }
+
+    .gen-title {
+        margin-left: 40px;
+    }
+
+    .gen-subtitle {
+        font-weight: 300;
+    }
+}
+
+.layout-margin, 
+.layout-margin-gt-sm, 
+.layout-margin-gt-sm>*, 
+.layout-margin-md, 
+.layout-margin-md>*, 
+.layout-margin>*, 
+.layout-margin>.flex, 
+.layout-margin>.flex-gt-sm, 
+.layout-margin>.flex-md {
+    margin: 0 8px;
+}
+
+
+@media only screen and (min-width: 601px) {
+    nav, 
+    nav .nav-wrapper i, 
+    nav a.button-collapse, 
+    nav a.button-collapse i {
+        height: 52px;
+        line-height: 52px;
+    }
+}
+
+
+.gen-main { 
+
+    padding: 20px 30px;
+    font-size: 14px;
+
+    .visualizations-header {
+        h1.gen-title {
+            color: $blue-light;
+            font-weight: 300;
+            padding: 0;
+            margin: 0;
+            font-size: 24px;
+        }
+    }
+
+    .escher-container {
+        background-color: $background;
+        border: 1px solid $border;
+        display: block;
+        margin: 1em auto;
+        padding: 1em;
+    }
+}
+
