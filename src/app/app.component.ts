@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-
+// Declaring vars for libraries
 declare var escher: any;
 declare var d3: any;
 
@@ -32,12 +32,11 @@ declare var d3: any;
                 <h1 class="md-display-1 gen-title">Visualization</h1>
             </div>
 
-            <div class="escher-container">
+            <div class="gen-container">
 
+                <!-- Toolbox -->
                 <load-pathway></load-pathway>
-
-                <!-- Teal page content  -->
-                <h1>My Angular 2 Base App</h1>
+                <color-scheme></color-scheme>
                  
                 <div id="mp_map">
                 </div>
@@ -63,8 +62,7 @@ export class AppComponent implements OnInit{
 
         console.log("Init!");
         
-        // called after the constructor and called  after the first ngOnChanges() 
-        // Load a JSON file for the map from the network
+        // Load a default map
         d3.json('e_coli_core.Core metabolism.json', function(e: any, data: any) {
             if (e) console.warn(e);
             
@@ -79,47 +77,17 @@ export class AppComponent implements OnInit{
                 // use the smooth pan and zoom option
                 use_3d_transform: true,
                 // No editing in this map
-                enable_editing: false,
+                enable_editing: true,
                 // No keyboard shortcuts 
                 enable_keys: false,
                 // No tooltips
-                enable_tooltips: false,
+                enable_tooltips: true,
             };
 
             escher.Builder(data, null, null, d3.select('#mp_map'), options1);
             console.log("Building escher");
         });
-
-        // function handleFileSelect(evt) {
-        //     var files = evt.target.files; // FileList object
-
-        //     // Loop through the FileList and render image files as thumbnails.
-        //     for (var i = 0, f; f = files[i]; i++) {
-
-        //     // Only process image files.
-        //     if (!f.type.match('image.*')) {
-        //         continue;
-        //     }
-
-        //     var reader = new FileReader();
-
-        //     // Closure to capture the file information.
-        //     reader.onload = (function(theFile) {
-        //         return function(e) {
-        //         // Render thumbnail.
-        //         var span = document.createElement('span');
-        //         span.innerHTML = ['<img class="thumb" src="', e.target.result,
-        //                             '" title="', escape(theFile.name), '"/>'].join('');
-        //         document.getElementById('list').insertBefore(span, null);
-        //         };
-        //     })(f);
-
-        //     // Read in the image file as a data URL.
-        //     reader.readAsDataURL(f);
-        //     }
-        // }
-
-        // document.getElementById('files').addEventListener('change', handleFileSelect, false);
+        
     }
 }
 

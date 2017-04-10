@@ -1,4 +1,4 @@
 <button (click)="filejson.click()" class="btn waves-effect waves-light" type="button" name="action">Load Pathway
     <i class="material-icons right">play_for_work</i>
 </button>
-<input #filejson type="file" id="filejson" style="opacity:0;" accept=".json">
+<input #filejson type="file" id="filejson" style="opacity:0;display:none;" accept=".json" (change)="loadjsonfile($event)">
