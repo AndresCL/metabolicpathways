@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ExampleComponent } from './example/example.component';
 
 declare var escher: any;
 declare var d3: any;
@@ -35,10 +34,7 @@ declare var d3: any;
 
             <div class="escher-container">
 
-                <button class="btn waves-effect waves-light" type="submit" name="action">Load Pathway
-                    <i class="material-icons right">play_for_work</i>
-                </button>
-                
+                <load-pathway></load-pathway>
 
                 <!-- Teal page content  -->
                 <h1>My Angular 2 Base App</h1>
@@ -92,7 +88,38 @@ export class AppComponent implements OnInit{
 
             escher.Builder(data, null, null, d3.select('#mp_map'), options1);
             console.log("Building escher");
-        }); 
+        });
+
+        // function handleFileSelect(evt) {
+        //     var files = evt.target.files; // FileList object
+
+        //     // Loop through the FileList and render image files as thumbnails.
+        //     for (var i = 0, f; f = files[i]; i++) {
+
+        //     // Only process image files.
+        //     if (!f.type.match('image.*')) {
+        //         continue;
+        //     }
+
+        //     var reader = new FileReader();
+
+        //     // Closure to capture the file information.
+        //     reader.onload = (function(theFile) {
+        //         return function(e) {
+        //         // Render thumbnail.
+        //         var span = document.createElement('span');
+        //         span.innerHTML = ['<img class="thumb" src="', e.target.result,
+        //                             '" title="', escape(theFile.name), '"/>'].join('');
+        //         document.getElementById('list').insertBefore(span, null);
+        //         };
+        //     })(f);
+
+        //     // Read in the image file as a data URL.
+        //     reader.readAsDataURL(f);
+        //     }
+        // }
+
+        // document.getElementById('files').addEventListener('change', handleFileSelect, false);
     }
 }
 
