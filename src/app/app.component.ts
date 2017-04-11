@@ -73,24 +73,6 @@ export class AppComponent implements OnInit{
             // First map: Just show the map
             // ---------------------------------------
 
-            let tooltips_1 = function (args: any) {
-                // Check if there is already text in the tooltip
-                if (args.el.childNodes.length === 0) {
-                    
-                    //console.log(args.state);
-
-                    // If not, add new text
-                    var node = document.createTextNode('Node: ')
-                    args.el.appendChild(node)
-                    
-                }
-                else{
-                    //console.log(args.state);
-                }
-                // Update the text to read out the identifier biggId
-                args.el.childNodes[0].textContent = 'From Node: ' + args.state.biggId + ' to Node:'
-            }
-
             let options1 = {
                 // Just show the zoom buttons
                 menu: 'zoom',
@@ -101,8 +83,7 @@ export class AppComponent implements OnInit{
                 // No keyboard shortcuts 
                 enable_keys: false,
                 // No tooltips
-                enable_tooltips: true,
-                tooltip_component: tooltips_1
+                enable_tooltips: true
             };
 
             // Building escher map
@@ -132,6 +113,7 @@ export class AppComponent implements OnInit{
             // Get click on segment group
             
             d3.selectAll(".segment-group").on('click', function(d: any, i: any) {
+                console.log("Segment id" + d.segment_id);
                 console.log("From: " + d.from_node_id);
                 console.log("To: " + d.to_node_id);
                 console.log(d3.select("#n" + d.from_node_id).node());
@@ -139,12 +121,12 @@ export class AppComponent implements OnInit{
                 //console.log(d3.select(this));
 
                 // Getting root/end nodes as array, as it could be more than one on each case
-                let rootNode = self.findRootNode(d.from_node_id, [], []).join(" - ");
-                let endNode = self.findEndNode(d.to_node_id, [], []).join(" - ");
+                let rootNode = self.findRootNode(d.segment_id, d.from_node_id, [], []).join(" - ");
+                let endNode = self.findEndNode(d.segment_id, d.from_node_id, [], []).join(" - ");
                 
-                let html = '<p><strong>From Node:</strong> ' + rootNode + ', <strong>To:</strong> ' + endNode + '</p>';
+                let html = '<strong>From Node:</strong> ' + rootNode + ' <strong>To:</strong> ' + endNode;
 
-                Materialize.toast(html, 6000);
+                Materialize.toast(html, 10000);
             });
             
         });
@@ -152,7 +134,7 @@ export class AppComponent implements OnInit{
     }
 
     // Finds end node for a segment
-    findEndNode(to_node_id: string, visited_segments: Array<string> = [], endNodes: Array<string>): Array<string>{
+    findEndNode(segment_id: number, to_node_id: string, visited_segments: Array<string> = [], endNodes: Array<string>): Array<string>{
 
         var self = this;
 
@@ -167,14 +149,14 @@ export class AppComponent implements OnInit{
                     
                     // Select segment
                     d3.select("#s" + d.connected_segments[i].segment_id).each(function(s: any){
-                        console.log("going to segment: " + s.segment_id);
-
+                        
                         // Avoid to call same node again, as its listed on connected_segments
-                        if(!visited_segments.includes(s.segment_id)){
+                        if(!visited_segments.includes(s.segment_id) && s.segment_id != segment_id){
+                            console.log("going to segment: " + s.segment_id);
                             visited_segments.push(s.segment_id);
 
                             // Call to iterate in possible other node segments
-                            endNodes = self.findEndNode(s.to_node_id, visited_segments, endNodes);
+                            endNodes = self.findEndNode(s.segment_id, s.to_node_id, visited_segments, endNodes);
                         }
                     });
                 }
@@ -194,7 +176,7 @@ export class AppComponent implements OnInit{
     }
 
     // Finds root nodes for a segment
-    findRootNode(from_node_id: string, visited_segments: Array<string> = [], rootNodes: Array<string>): Array<string>{
+    findRootNode(segment_id: number, from_node_id: string, visited_segments: Array<string> = [], rootNodes: Array<string>): Array<string>{
 
         var self = this;
 
@@ -203,20 +185,22 @@ export class AppComponent implements OnInit{
 
             // If node type is a multimarker or midmarker
             if(d.node_type == "multimarker" || d.node_type == "midmarker"){
-                
+                console.log("Visiting node: " + d.node_id);
+
                 // Explore it segments
                 for(let i=0; i<d.connected_segments.length; i++){
                     
                     // Select segment
                     d3.select("#s" + d.connected_segments[i].segment_id).each(function(s: any){
-                        console.log("going to segment: " + s.segment_id);
+                        
 
                         // Avoid to call same node again, as its listed on connected_segments
-                        if(!visited_segments.includes(s.segment_id)){
+                        if(!visited_segments.includes(s.segment_id) && s.segment_id != segment_id){
+                            console.log("going to segment: " + s.segment_id);
                             visited_segments.push(s.segment_id);
 
                             // Call to iterate in possible other node segments
-                            rootNodes = self.findEndNode(s.from_node_id, visited_segments, rootNodes);
+                            rootNodes = self.findRootNode(s.segment_id, s.from_node_id, visited_segments, rootNodes);
                         }
                     });
                 }

@@ -26,12 +26,12 @@ export class LoadpathwayComponent {
                 
                 return function(evt: any) {
 
-                    console.log(evt);
+                    //console.log(evt);
 
                     // Load uploaded json in variable
                     let json = JSON.parse(evt.target.result);
                         
-                    console.log("loading json");
+                    //console.log("loading json");
                     // ---------------------------------------
                     // First map: Just show the map
                     // ---------------------------------------
@@ -50,7 +50,7 @@ export class LoadpathwayComponent {
                     };
 
                     escher.Builder(json, null, null, d3.select('#mp_map'), options1);
-                    console.log("Building escher");
+                    //console.log("Building escher");
 
                     // Counting nodes
                     let node_types: Array<number> = [];
@@ -70,13 +70,7 @@ export class LoadpathwayComponent {
                         }
                     }
 
-                    d3.selectAll(".segment-group").on('click', function(d: any, i:any) {
-                        console.log("From: " + d.from_node_id);
-                        console.log("To: " + d.to_node_id);
-                        console.log(d3.select("#n" + d.from_node_id).node());
-                        console.log(d3.select("#n" + d.to_node_id).node());
-                        //console.log(d3.select(this));
-                    });
+                    
 
                 };
             
