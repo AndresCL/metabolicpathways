@@ -70,7 +70,7 @@ export class LoadpathwayComponent {
                         }
                     }
 
-                    d3.selectAll(".segment-group").on('click', function(d,i) {
+                    d3.selectAll(".segment-group").on('click', function(d: any, i:any) {
                         console.log("From: " + d.from_node_id);
                         console.log("To: " + d.to_node_id);
                         console.log(d3.select("#n" + d.from_node_id).node());

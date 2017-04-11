@@ -64,6 +64,7 @@ export class AppComponent implements OnInit{
         console.log("Init!");
         
         // Load a default map
+        var self = this;
         d3.json('e_coli_core.Core metabolism.json', function(e: any, data: any) {
             if (e) console.warn(e);
             
@@ -76,7 +77,7 @@ export class AppComponent implements OnInit{
                 // Check if there is already text in the tooltip
                 if (args.el.childNodes.length === 0) {
                     
-                    console.log(args.state);
+                    //console.log(args.state);
 
                     // If not, add new text
                     var node = document.createTextNode('Node: ')
@@ -112,8 +113,10 @@ export class AppComponent implements OnInit{
             let node_types: Array<number> = [];
             d3.selectAll("#nodes .node").each(function(d: any) {
 
-                if(node_types[d.node_type] == undefined) node_types[d.node_type]=1; 
-                else node_types[d.node_type]++;
+                if(d.node_type != "midmarker" && d.node_type != "multimarker"){
+                    if(node_types[d.node_type] == undefined) node_types[d.node_type]=1; 
+                    else node_types[d.node_type]++;
+                }
 
             });
 
@@ -126,17 +129,70 @@ export class AppComponent implements OnInit{
                 }
             }
 
-            //
+            // Get click on segment group
+            
             d3.selectAll(".segment-group").on('click', function(d: any, i: any) {
                 console.log("From: " + d.from_node_id);
                 console.log("To: " + d.to_node_id);
                 console.log(d3.select("#n" + d.from_node_id).node());
                 console.log(d3.select("#n" + d.to_node_id).node());
                 //console.log(d3.select(this));
+
+                let rootNode = self.findRootNode(d.from_node_id);
+                
+                // d3.selectAll("#n" + d.to_node_id).each(function(d: any) {
+                //     let max_segment = d.connected_segments.length;
+                //     console.log(d);
+                //     if(d.node_type){
+
+                //     }
+                // });
             });
             
         });
         
+    }
+
+    // Finds root node for a segment
+    findRootNode(from_node_id: string){
+
+        var self = this;
+        var origin = "";
+
+        // Open node attributes
+        d3.selectAll("#n" + from_node_id).each(function(d: any) {
+
+            // If node type is a multimarker or midmarker
+            if(d.node_type == "multimarker" || d.node_type == "midmarker"){
+                
+                // Explore it segments
+                for(let i=0; i<d.connected_segments.length; i++){
+                    
+                    // Select segment
+                    d3.select("#s" + d.connected_segments[i].segment_id).each(function(s: any){
+                        console.log("back to node: " + s.from_node_id);
+                        
+                        // Avoid to call same node again, as its listed on connected_segments
+                        if(from_node_id != s.from_node_id){
+                            self.findRootNode(s.from_node_id);
+                        }
+                    });
+                }
+                
+                //findRootNode = false; 
+            }
+            // If type is metabolite its a starting node
+            else if(d.node_type == "metabolite") {
+
+                // Concatenate origin names (Can be more than one, depending on segment)
+                if(origin != "") origin = " and/or " + d.big_id;
+                else origin = d.big_id;
+
+                // Return value
+                return d.big_id;
+            }
+        });
+
     }
 }
 
