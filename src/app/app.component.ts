@@ -124,7 +124,7 @@ export class AppComponent implements OnInit{
             for (var property in node_types) {
                 if (node_types.hasOwnProperty(property)) {
                     
-                    // do stuff
+                    // Show statistics in toast
                     Materialize.toast(property + ': ' + node_types[property], 6000);
                 }
             }
@@ -138,26 +138,65 @@ export class AppComponent implements OnInit{
                 console.log(d3.select("#n" + d.to_node_id).node());
                 //console.log(d3.select(this));
 
-                let rootNode = self.findRootNode(d.from_node_id);
+                // Getting root/end nodes as array, as it could be more than one on each case
+                let rootNode = self.findRootNode(d.from_node_id, [], []).join(" - ");
+                let endNode = self.findEndNode(d.to_node_id, [], []).join(" - ");
                 
-                // d3.selectAll("#n" + d.to_node_id).each(function(d: any) {
-                //     let max_segment = d.connected_segments.length;
-                //     console.log(d);
-                //     if(d.node_type){
+                let html = '<p><strong>From Node:</strong> ' + rootNode + ', <strong>To:</strong> ' + endNode + '</p>';
 
-                //     }
-                // });
+                Materialize.toast(html, 6000);
             });
             
         });
         
     }
 
-    // Finds root node for a segment
-    findRootNode(from_node_id: string){
+    // Finds end node for a segment
+    findEndNode(to_node_id: string, visited_segments: Array<string> = [], endNodes: Array<string>): Array<string>{
 
         var self = this;
-        var origin = "";
+
+        // Open node attributes
+        d3.selectAll("#n" + to_node_id).each(function(d: any) {
+
+            // If node type is a multimarker or midmarker
+            if(d.node_type == "multimarker" || d.node_type == "midmarker"){
+                
+                // Explore it segments
+                for(let i=0; i<d.connected_segments.length; i++){
+                    
+                    // Select segment
+                    d3.select("#s" + d.connected_segments[i].segment_id).each(function(s: any){
+                        console.log("going to segment: " + s.segment_id);
+
+                        // Avoid to call same node again, as its listed on connected_segments
+                        if(!visited_segments.includes(s.segment_id)){
+                            visited_segments.push(s.segment_id);
+
+                            // Call to iterate in possible other node segments
+                            endNodes = self.findEndNode(s.to_node_id, visited_segments, endNodes);
+                        }
+                    });
+                }
+            }
+            // If type is metabolite its a starting node
+            else { //if(d.node_type == "metabolite") {
+
+                if(!endNodes.includes(d.bigg_id + '(' + d.name + ')')){
+                    endNodes.push(d.bigg_id + '(' + d.name + ')');
+                }
+            }
+        });
+
+        // Return end nodes array
+        return endNodes;
+
+    }
+
+    // Finds root nodes for a segment
+    findRootNode(from_node_id: string, visited_segments: Array<string> = [], rootNodes: Array<string>): Array<string>{
+
+        var self = this;
 
         // Open node attributes
         d3.selectAll("#n" + from_node_id).each(function(d: any) {
@@ -170,28 +209,29 @@ export class AppComponent implements OnInit{
                     
                     // Select segment
                     d3.select("#s" + d.connected_segments[i].segment_id).each(function(s: any){
-                        console.log("back to node: " + s.from_node_id);
-                        
+                        console.log("going to segment: " + s.segment_id);
+
                         // Avoid to call same node again, as its listed on connected_segments
-                        if(from_node_id != s.from_node_id){
-                            self.findRootNode(s.from_node_id);
+                        if(!visited_segments.includes(s.segment_id)){
+                            visited_segments.push(s.segment_id);
+
+                            // Call to iterate in possible other node segments
+                            rootNodes = self.findEndNode(s.from_node_id, visited_segments, rootNodes);
                         }
                     });
                 }
-                
-                //findRootNode = false; 
             }
             // If type is metabolite its a starting node
-            else if(d.node_type == "metabolite") {
+            else { //if(d.node_type == "metabolite") {
 
-                // Concatenate origin names (Can be more than one, depending on segment)
-                if(origin != "") origin = " and/or " + d.big_id;
-                else origin = d.big_id;
-
-                // Return value
-                return d.big_id;
+                if(!rootNodes.includes(d.bigg_id + '(' + d.name + ')')){
+                    rootNodes.push(d.bigg_id + '(' + d.name + ')');
+                }
             }
         });
+
+        // Return root nodes array
+        return rootNodes;
 
     }
 }
