@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 // Declaring vars for libraries
 declare var escher: any;
 declare var d3: any;
+declare var Materialize: any;
 
 @Component({
     selector: 'app-component',
@@ -71,7 +72,25 @@ export class AppComponent implements OnInit{
             // First map: Just show the map
             // ---------------------------------------
 
-            var options1 = {
+            let tooltips_1 = function (args: any) {
+                // Check if there is already text in the tooltip
+                if (args.el.childNodes.length === 0) {
+                    
+                    console.log(args.state);
+
+                    // If not, add new text
+                    var node = document.createTextNode('Node: ')
+                    args.el.appendChild(node)
+                    
+                }
+                else{
+                    //console.log(args.state);
+                }
+                // Update the text to read out the identifier biggId
+                args.el.childNodes[0].textContent = 'From Node: ' + args.state.biggId + ' to Node:'
+            }
+
+            let options1 = {
                 // Just show the zoom buttons
                 menu: 'zoom',
                 // use the smooth pan and zoom option
@@ -82,10 +101,40 @@ export class AppComponent implements OnInit{
                 enable_keys: false,
                 // No tooltips
                 enable_tooltips: true,
+                tooltip_component: tooltips_1
             };
 
+            // Building escher map
             escher.Builder(data, null, null, d3.select('#mp_map'), options1);
             console.log("Building escher");
+
+            // Counting nodes
+            let node_types: Array<number> = [];
+            d3.selectAll("#nodes .node").each(function(d: any) {
+
+                if(node_types[d.node_type] == undefined) node_types[d.node_type]=1; 
+                else node_types[d.node_type]++;
+
+            });
+
+            // Showing statistics as toast
+            for (var property in node_types) {
+                if (node_types.hasOwnProperty(property)) {
+                    
+                    // do stuff
+                    Materialize.toast(property + ': ' + node_types[property], 6000);
+                }
+            }
+
+            //
+            d3.selectAll(".segment-group").on('click', function(d: any, i: any) {
+                console.log("From: " + d.from_node_id);
+                console.log("To: " + d.to_node_id);
+                console.log(d3.select("#n" + d.from_node_id).node());
+                console.log(d3.select("#n" + d.to_node_id).node());
+                //console.log(d3.select(this));
+            });
+            
         });
         
     }
