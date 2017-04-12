@@ -100,7 +100,9 @@ gulp.task('scss', () => {
 
 gulp.task('css', () => {
 
-    return gulp.src('node_modules/escher-vis/css/dist/builder.min.css')
+    return gulp.src(['node_modules/escher-vis/css/dist/builder.min.css', 
+                    'node_modules/materialize-css/dist/css/materialize.min.css'])
+        //.pipe(concat('styles.css'))
         .pipe(gulp.dest('dist/css/'));
 
 });
