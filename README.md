@@ -3,8 +3,10 @@
 Visualization of metabolic pathways (Escher, D3JS)
 Based on: https://github.com/kiswa/angular2-base
 
-## Usage
+## Installation
 
-Clone the repo to where you want to use it, then install the npm packages with `npm i`. You may also need to run `gem install scss-lint` for the linter to work.
+Install the npm packages with `npm install`. You may also need to run `gem install scss-lint` for the linter to work.
 
 To generate the output directory `dist/` run the command `gulp`.
+
+
