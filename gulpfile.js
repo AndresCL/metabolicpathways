@@ -107,6 +107,14 @@ gulp.task('css', () => {
 
 });
 
+gulp.task('fonts', () => {
+
+    return gulp.src('node_modules/materialize-css/dist/fonts/roboto/*.*')
+        //.pipe(concat('styles.css'))
+        .pipe(gulp.dest('dist/fonts/roboto'));
+
+});
+
 gulp.task('test-run', [ 'tsc' ], () => {
     return gulp.src('test/**/*.spec.js')
         .pipe(mocha());
@@ -164,6 +172,7 @@ gulp.task('default', [
     'images',
     'scss-lint',
     'scss',
-    'css'
+    'css',
+    'fonts'
 ]);
 
