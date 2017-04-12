@@ -89,12 +89,19 @@ gulp.task('scss', () => {
         .pipe(gulp.dest('dist/css/')); 
 
 
-  //var cssStream  = gulp.src('node_modules/escher-vis/css/dist/builder.min.css');
+//   var cssStream  = gulp.src('node_modules/escher-vis/css/dist/builder.min.css');
 
 //   return es.merge(sassStream, cssStream)
 //         .pipe(concat('styles.css'))
 //         .pipe(cssPrefixer())
 //         .pipe(gulp.dest('dist/css/'));
+
+});
+
+gulp.task('css', () => {
+
+    return gulp.src('node_modules/escher-vis/css/dist/builder.min.css')
+        .pipe(gulp.dest('dist/css/'));
 
 });
 
@@ -154,6 +161,7 @@ gulp.task('default', [
     'json',
     'images',
     'scss-lint',
-    'scss'
+    'scss',
+    'css'
 ]);
 

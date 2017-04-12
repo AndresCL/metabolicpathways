@@ -9,4 +9,4 @@ Install the npm packages with `npm install`. You may also need to run `gem insta
 
 To generate the output directory `dist/` run the command `gulp`.
 
-
+See this running on https://andrescl.github.io/metabolicpathways/dist/index.html
